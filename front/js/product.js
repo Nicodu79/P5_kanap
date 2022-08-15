@@ -51,11 +51,12 @@ fetch("http://localhost:3000/api/products/" + productID)
 
 // Gestion du panier
 
-  let btnCart = document.getElementById("addToCart");
-  btnCart.addEventListener("click", function(){
+  let sendToCart = document.getElementById("addToCart");
+  sendToCart.addEventListener("click", function(){
     console.log("test");
     const choiceColor = document.getElementById("colors").value;
     const choiceQuantity = document.getElementById("quantity").value;
+    
     if (choiceQuantity == "0"){
       alert("Veuillez saisir une quantité") 
       return false
@@ -64,39 +65,35 @@ fetch("http://localhost:3000/api/products/" + productID)
       alert("Veuillez choisir une couleur")
       return false
     }
-    if(window.localStorage.getItem("quantity")){
-      
-    }
-    window.localStorage.setItem("quantity", choiceQuantity);
-    
-    
-  })
-// exo --------------------------------------------
-  function saveBasket(basket){
-    localStorage.setItem("basket", JSON.stringify(basket));
-  }
-// JSON.stringify : transforme objet en chaine de caractere (compatible localStorage)
-  function getBasket(){
-    let basket = (localStorage.getItem("basket"));
-    if (basket == null){
-      return [];  // ici retourne un tableau vide
-    }else{
-      return JSON.parse(basket);
-    }
-  }
 
-  function addBasket(product){
-    let basket = getBasket();
-    let foundProduct = basket.find( p => p.id == product.id);
-    if(foundProduct != undefined){
-      foundProduct.quantity++;
+    // recuperation des valeurs du formulaire
+    let addProduct = [{productID, choiceColor, choiceQuantity}];
+    
+    let ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
+    let foundProduct = addProduct.find(p => p.id == productID);
+    
+    // s'il y a deja des produits dans le localStorage
+    if(ProductInLocalStorage){
+      ProductInLocalStorage.push(addProduct);
+      window.localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
+
     }else{
-      product.quantity = 1;
-      basket.push(product)
+      ProductInLocalStorage =[];
+      ProductInLocalStorage.push(addProduct);
+      window.localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
     }
-    basket.push(product);
-    saveBasket(basket);
-  }
+    console.log(addProduct)
+
+// pour que les produits identiques s'incrementent dans une seule ligne
+
+    if (foundProduct =! undefined){
+      foundProduct.choiceQuantity++;
+    }else{
+      ProductInLocalStorage.push(addProduct);
+    }
+     
+
+  })
 
   
 
