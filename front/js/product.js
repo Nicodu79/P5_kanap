@@ -57,6 +57,9 @@ fetch("http://localhost:3000/api/products/" + productID)
     const choiceColor = document.getElementById("colors").value;
     const choiceQuantity = document.getElementById("quantity").value;
     
+  
+    // Message si quantité a 0 ou couleur non sélectionnée
+
     if (choiceQuantity == "0"){
       alert("Veuillez saisir une quantité") 
       return false
@@ -65,36 +68,36 @@ fetch("http://localhost:3000/api/products/" + productID)
       alert("Veuillez choisir une couleur")
       return false
     }
-
-    // recuperation des valeurs du formulaire
-    let addProduct = [{productID, choiceColor, choiceQuantity}];
-    
     let ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
-    let foundProduct = addProduct.find(p => p.id == productID);
-    
-    // s'il y a deja des produits dans le localStorage
-    if(ProductInLocalStorage){
-      ProductInLocalStorage.push(addProduct);
+    if(!ProductInLocalStorage){
+      ProductInLocalStorage = [];
+    }
+    // recuperation des valeurs du formulaire
+    let addProduct = {id : productID, color : choiceColor,  quantity : choiceQuantity};
+ 
+  // pour que les produits identiques s'incrementent dans une seule ligne
+  
+    var sameItem = false;
+    ProductInLocalStorage.forEach(product => {
+      console.log(product);      
+      if(product.id == addProduct.id && product.color == addProduct.color){
+        sameItem = true
+        console.log("produit avec le meme id");
+        console.log("produit avec la meme couleur");
+        product.quantity = parseInt(product.quantity) + parseInt(addProduct.quantity);
+      }
+    });
+    if(sameItem == true){
       window.localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
-
     }else{
-      ProductInLocalStorage =[];
       ProductInLocalStorage.push(addProduct);
       window.localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
     }
-    console.log(addProduct)
-
-// pour que les produits identiques s'incrementent dans une seule ligne
-
-    if (foundProduct =! undefined){
-      foundProduct.choiceQuantity++;
-    }else{
-      ProductInLocalStorage.push(addProduct);
-    }
-     
-
   })
 
+
+
+  
   
 
 
