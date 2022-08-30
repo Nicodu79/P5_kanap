@@ -129,7 +129,6 @@ function totalQtyPrice() {
         let priceKanap = elementHtml.querySelector(".cart__item__content__price").textContent;
         priceKanap.replace(" €", "");
         totalPrice += parseInt(priceKanap) * elementHtml.querySelector(".itemQuantity").valueAsNumber;
-        //     console.log(totalPrice);
     })
 
     document.getElementById("totalQuantity").textContent = totalQuantity;
@@ -156,7 +155,6 @@ function deleteProduct() {
             alert("ce produit va etre supprimé du panier");
             listItem[i].remove();
             totalQtyPrice();
-            // location.reload();
         });
     }
 }
@@ -280,13 +278,17 @@ form.addEventListener("submit", function (e) {
     e.preventDefault();
     var formValid = false
 
+// Verifier si toute les données saisies du formulaire sont correctes
+
     if ((form.firstName.value) && (form.lastName.value) && (form.address.value) && (form.city.value) && (form.email.value)) {
         console.log("formulaire OK");
         formValid = true;
     } else {
         alert("Veuillez remplir le formulaire")
-
     }
+
+// Si le forlulaire est ok, creation des donnnées à envoyer au serveur
+
     if (formValid) {
         const ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
         let commandId = [];
@@ -319,14 +321,14 @@ form.addEventListener("submit", function (e) {
             body: JSON.stringify(order),
 
         })
-        .then((response) => response.json())
-        .then((responseServeur) => {
-            console.log(responseServeur);
-            localStorage.clear();
-            localStorage.setItem("orderId", responseServeur.orderId);
+            .then((response) => response.json())
+            .then((responseServeur) => {
+                console.log(responseServeur);
+                localStorage.clear();
+                localStorage.setItem("orderId", responseServeur.orderId);
 
-            document.location.href = "confirmation.html"
-        });
+                document.location.href = "confirmation.html"
+            });
     }
 });
 
