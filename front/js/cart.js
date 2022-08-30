@@ -5,7 +5,7 @@
     console.log(canapList);
     // je récupère ma liste de canapé présent dans l'API
     basket(canapList); // je la passe en paramètre à ma fonction basket qui va gérer l'affichage du panier
-    totalQtyPrice();   
+    totalQtyPrice();
     deleteProduct();
     changeQuantity();
 })();
@@ -123,17 +123,13 @@ function totalQtyPrice() {
     let totalQuantity = 0;
     let totalPrice = 0;
     let elements = document.querySelectorAll(".cart__item");
-    // console.log(elements);
     elements.forEach((elementHtml) => {
-      //     console.log(elementHtml.querySelector(".itemQuantity").value);
         totalQuantity += elementHtml.querySelector(".itemQuantity").valueAsNumber;
-         console.log(totalQuantity);
 
         let priceKanap = elementHtml.querySelector(".cart__item__content__price").textContent;
         priceKanap.replace(" €", "");
-         console.log(parseInt(priceKanap));
         totalPrice += parseInt(priceKanap) * elementHtml.querySelector(".itemQuantity").valueAsNumber;
-         console.log(totalPrice);
+        //     console.log(totalPrice);
     })
 
     document.getElementById("totalQuantity").textContent = totalQuantity;
@@ -147,48 +143,192 @@ function deleteProduct() {
     let ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
     let listItem = document.querySelectorAll(".cart__item");
     console.log(listItem);
-    for (let i = 0; i < listItem.length; i++){
+    for (let i = 0; i < listItem.length; i++) {
         let dataId = listItem[i].getAttribute("data-id");
         let dataColor = listItem[i].getAttribute("data-color");
         console.log(dataColor);
 
-        listItem[i].querySelector(".deleteItem").addEventListener("click", (event) =>{
-        ProductInLocalStorage = ProductInLocalStorage.filter(p =>  dataId != p.id || dataColor != p.color);
-         //  listItem[i].remove();
-      console.log(ProductInLocalStorage);
-      localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
-      alert("ce produit va etre supprimé du panier");
+        listItem[i].querySelector(".deleteItem").addEventListener("click", (event) => {
+            ProductInLocalStorage = ProductInLocalStorage.filter(p => dataId != p.id || dataColor != p.color);
 
-      location.reload();
+            console.log(ProductInLocalStorage);
+            localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
+            alert("ce produit va etre supprimé du panier");
+            listItem[i].remove();
+            totalQtyPrice();
+            // location.reload();
         });
     }
 }
 
 // Fonction modification quantité
-function changeQuantity(){
+function changeQuantity() {
     let quantityArticle = document.querySelectorAll(".cart__item");
     console.log(quantityArticle);
     let ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
     console.log(ProductInLocalStorage);
 
-    quantityArticle.forEach((quantityArticle)=>{
+    quantityArticle.forEach((quantityArticle) => {
         quantityArticle.addEventListener("change", (event) => {
-            for (article of ProductInLocalStorage){ 
-            if (article.id === quantityArticle.dataset.id && article.color === quantityArticle.dataset.color){
-                article.quantity = event.target.value;
-                localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
-                totalQtyPrice();
+            for (article of ProductInLocalStorage) {
+                if (article.id === quantityArticle.dataset.id && article.color === quantityArticle.dataset.color) {
+                    article.quantity = event.target.value;
+                    localStorage.setItem("product", JSON.stringify(ProductInLocalStorage));
+                    totalQtyPrice();
+                };
             };
-        };
         });
     });
 };
 
 
+// Validation du formulaire
+
+let form = document.querySelector(".cart__order__form");
+console.log(form.email);
+
+// Initialisation des RegExp
+const emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+const nameRegExp = new RegExp('^[a-zA-Z ,.-]+$');
+const addressRegExp = new RegExp('^[0-9]{1,3}[,. ]{1}[-a-zA-Zàâäéèêëïîôöùûüç ]{5,100}$');
+
+// Validation Prenom
+form.firstName.addEventListener("change", function () {
+    validFirstName(this);
+});
+const validFirstName = function (inputFirstName) {
+    let MsgFirstName = inputFirstName.nextElementSibling;
+    if (testFirstName = nameRegExp.test(inputFirstName.value)) {
+        MsgFirstName.textContent = "Prénom valide";
+        return true
+    } else {
+        MsgFirstName.textContent = "Prénom non valide";
+        return false
+    }
+};
+
+
+// Validation nom
+form.lastName.addEventListener("change", function () {
+    validLastName(this);
+});
+const validLastName = function (inputLastName) {
+    let MsgLastName = inputLastName.nextElementSibling;
+    if (testLastName = nameRegExp.test(inputLastName.value)) {
+        MsgLastName.textContent = "Nom valide";
+        return true
+    } else {
+        MsgLastName.textContent = "Nom non valide";
+        return false
+    }
+};
+
+
+// Validation adresse
+form.address.addEventListener("change", function () {
+    validAddress(this);
+});
+const validAddress = function (inputAddress) {
+    let MsgAddress = inputAddress.nextElementSibling;
+    if (testAddress = addressRegExp.test(inputAddress.value)) {
+        MsgAddress.textContent = "Adresse valide";
+        return true
+    } else {
+        MsgAddress.textContent = "Adresse non valide";
+        return false
+    }
+};
+
+
+// Validation ville
+form.city.addEventListener("change", function () {
+    validCity(this);
+});
+const validCity = function (inputCity) {
+    let MsgCity = inputCity.nextElementSibling;
+    if (testCity = nameRegExp.test(inputCity.value)) {
+        MsgCity.textContent = "Ville valide";
+        return true
+    } else {
+        MsgCity.textContent = "Ville non valide";
+        return false
+    }
+};
+
+
+// Validation Email
+form.email.addEventListener("change", function () {
+    validEmail(this);
+});
+const validEmail = function (inputEmail) {
+    let MsgMail = inputEmail.nextElementSibling;
+    if (testEmail = emailRegExp.test(inputEmail.value)) {
+        MsgMail.textContent = "Adresse mail valide";
+        return true
+    } else {
+        MsgMail.textContent = "Adresse Mail non valide";
+        return false
+    }
+}
 
 
 
 
+// Ecouter la soumission du formulaire
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var formValid = false
+
+    if ((form.firstName.value) && (form.lastName.value) && (form.address.value) && (form.city.value) && (form.email.value)) {
+        console.log("formulaire OK");
+        formValid = true;
+    } else {
+        alert("Veuillez remplir le formulaire")
+
+    }
+    if (formValid) {
+        const ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
+        let commandId = [];
+        console.log(commandId);
+        ProductInLocalStorage.forEach((product) => {
+            commandId.push(product.id);
+        });
+        console.log(commandId);
+
+        const order = {
+            contact: {
+                firstName: form.firstName.value,
+                lastName: form.lastName.value,
+                address: form.address.value,
+                city: form.city.value,
+                email: form.email.value,
+            },
+            products: commandId,
+        };
+        console.log(order);
+
+        // Requete fetch POST
+
+        fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(order),
+
+        })
+        .then((response) => response.json())
+        .then((responseServeur) => {
+            console.log(responseServeur);
+            localStorage.clear();
+            localStorage.setItem("orderId", responseServeur.orderId);
+
+            document.location.href = "confirmation.html"
+        });
+    }
+});
 
 
 
