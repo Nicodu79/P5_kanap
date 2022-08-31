@@ -205,7 +205,6 @@ const validFirstName = function (inputFirstName) {
     }
 };
 
-
 // Validation nom
 form.lastName.addEventListener("change", function () {
     validLastName(this);
@@ -270,15 +269,13 @@ const validEmail = function (inputEmail) {
 }
 
 
-
-
 // Ecouter la soumission du formulaire
 
 form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var formValid = false
+    let formValid = false
 
-// Verifier si toute les données saisies du formulaire sont correctes
+    // Verifier si toute les données saisies du formulaire sont correctes
 
     if ((form.firstName.value) && (form.lastName.value) && (form.address.value) && (form.city.value) && (form.email.value)) {
         console.log("formulaire OK");
@@ -287,7 +284,7 @@ form.addEventListener("submit", function (e) {
         alert("Veuillez remplir le formulaire")
     }
 
-// Si le forlulaire est ok, creation des donnnées à envoyer au serveur
+    // Si le forlulaire est ok, creation des donnnées à envoyer au serveur
 
     if (formValid) {
         const ProductInLocalStorage = JSON.parse(localStorage.getItem("product"));
